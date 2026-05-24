@@ -14,7 +14,7 @@ Welcome to Uni-Runtime! We appreciate your contributions. Here's a guide to help
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/uni-runtime.git
+git clone https://github.com/mars369-shan/uni-runtime.git
 cd uni-runtime
 
 # Build

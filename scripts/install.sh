@@ -3,7 +3,7 @@
 set -e
 
 INSTALL_DIR="${HOME}/.local/bin"
-REPO_URL="https://github.com/yourusername/uni-runtime"
+REPO_URL="https://github.com/mars369-shan/uni-runtime"
 VERSION="${VERSION:-latest}"
 
 echo "=== Uni-Runtime 一键安装脚本 ==="

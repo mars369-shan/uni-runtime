@@ -30,9 +30,9 @@ case $OS in
     "Linux")
         echo "Downloading Linux installer..."
         if command -v curl &> /dev/null; then
-            curl -sSL https://raw.githubusercontent.com/yourusername/uni-runtime/main/install.sh | bash
+            curl -sSL https://raw.githubusercontent.com/mars369-shan/uni-runtime/main/install.sh | bash
         elif command -v wget &> /dev/null; then
-            wget -qO- https://raw.githubusercontent.com/yourusername/uni-runtime/main/install.sh | bash
+            wget -qO- https://raw.githubusercontent.com/mars369-shan/uni-runtime/main/install.sh | bash
         else
             echo "Error: curl or wget required"
             exit 1
@@ -41,7 +41,7 @@ case $OS in
     
     "macOS")
         echo "Downloading macOS installer..."
-        curl -sSL https://raw.githubusercontent.com/yourusername/uni-runtime/main/install.sh | bash
+        curl -sSL https://raw.githubusercontent.com/mars369-shan/uni-runtime/main/install.sh | bash
         ;;
     
     "Windows"*)
@@ -49,10 +49,10 @@ case $OS in
         echo ""
         echo "Please run the following command in PowerShell as Administrator:"
         echo ""
-        echo "Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/yourusername/uni-runtime/main/install.ps1'))"
+        echo "Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/mars369-shan/uni-runtime/main/install.ps1'))"
         echo ""
         echo "Or download and run the installer manually:"
-        echo "https://raw.githubusercontent.com/yourusername/uni-runtime/main/install.ps1"
+        echo "https://raw.githubusercontent.com/mars369-shan/uni-runtime/main/install.ps1"
         ;;
     
     *)

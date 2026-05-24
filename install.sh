@@ -87,7 +87,7 @@ echo "Creating installation directory..."
 mkdir -p "$TARGET_DIR"
 
 echo "Downloading binary..."
-DOWNLOAD_URL="https://github.com/yourusername/uni-runtime/releases/download/v${VERSION}/${BINARY_NAME}-${OS}-${ARCH}"
+DOWNLOAD_URL="https://github.com/mars369-shan/uni-runtime/releases/download/v${VERSION}/${BINARY_NAME}-${OS}-${ARCH}"
 
 if command -v curl &> /dev/null; then
     curl -L "$DOWNLOAD_URL" -o "$TARGET_DIR/$BINARY_NAME"

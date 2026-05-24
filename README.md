@@ -2,9 +2,9 @@
 
 An isolated runtime environment supporting multiple Linux distribution package managers.
 
-[![Build Status](https://img.shields.io/github/actions/workflow/status/yourusername/uni-runtime/rust.yml)](https://github.com/yourusername/uni-runtime/actions)
-[![License](https://img.shields.io/github/license/yourusername/uni-runtime)](https://github.com/yourusername/uni-runtime/blob/main/LICENSE)
-[![Version](https://img.shields.io/github/v/release/yourusername/uni-runtime)](https://github.com/yourusername/uni-runtime/releases)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/mars369-shan/uni-runtime/rust.yml)](https://github.com/mars369-shan/uni-runtime/actions)
+[![License](https://img.shields.io/github/license/mars369-shan/uni-runtime)](https://github.com/mars369-shan/uni-runtime/blob/main/LICENSE)
+[![Version](https://img.shields.io/github/v/release/mars369-shan/uni-runtime)](https://github.com/mars369-shan/uni-runtime/releases)
 
 ## Features
 
@@ -33,7 +33,7 @@ An isolated runtime environment supporting multiple Linux distribution package m
 ### Linux/macOS
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/yourusername/uni-runtime/main/install.sh | bash
+curl -sSL https://raw.githubusercontent.com/mars369-shan/uni-runtime/main/install.sh | bash
 ```
 
 ### Windows
@@ -43,13 +43,13 @@ Run in PowerShell as Administrator:
 ```powershell
 Set-ExecutionPolicy Bypass -Scope Process -Force
 [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
-iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/yourusername/uni-runtime/main/install.ps1'))
+iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/mars369-shan/uni-runtime/main/install.ps1'))
 ```
 
 ### Build from Source
 
 ```bash
-git clone https://github.com/yourusername/uni-runtime.git
+git clone https://github.com/mars369-shan/uni-runtime.git
 cd uni-runtime
 cargo build --release
 ```

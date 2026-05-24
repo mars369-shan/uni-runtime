@@ -83,7 +83,7 @@ Write-Host "`nCreating installation directory..." -ForegroundColor Cyan
 New-Item -ItemType Directory -Path $InstallDir -Force | Out-Null
 
 # Download binary
-$binaryUrl = "https://github.com/yourusername/uni-runtime/releases/download/v$Version/uni-runtime-windows-$arch.exe"
+$binaryUrl = "https://github.com/mars369-shan/uni-runtime/releases/download/v$Version/uni-runtime-windows-$arch.exe"
 $binaryPath = "$InstallDir\uni-runtime.exe"
 
 Write-Host "Downloading binary..." -ForegroundColor Cyan
