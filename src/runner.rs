@@ -62,6 +62,7 @@ impl Runner {
         std::fs::create_dir_all(&env_root).context("Cannot create environment directory")?;
 
         let docker_image = distro.docker_image();
+        let container_name = format!("uni-runtime-{}", name);
         println!("Extracting filesystem from Docker image: {}", docker_image);
 
         let pull_output = Command::new("docker")
@@ -73,30 +74,33 @@ impl Runner {
         }
         println!("Image pulled successfully");
 
-        let mut export_cmd = Command::new("docker");
-        export_cmd.args(["export", "-o", "-", docker_image]);
-        
-        let mut tar_cmd = Command::new("tar");
-        tar_cmd.args(["-x", "-f", "-", "-C", env_root.to_str().unwrap()]);
-        tar_cmd.stdin(Stdio::piped());
-        
-        let mut tar_child = tar_cmd.spawn().context("Failed to start tar command")?;
-        let mut export_child = export_cmd.stdout(Stdio::piped()).spawn().context("Failed to start docker export command")?;
-        
-        let mut export_stdout = export_child.stdout.take().expect("Failed to get docker export stdout");
-        let mut tar_stdin = tar_child.stdin.take().expect("Failed to get tar stdin");
-        
-        std::thread::spawn(move || {
-            let _ = std::io::copy(&mut export_stdout, &mut tar_stdin);
-        });
-        
-        let tar_status = tar_child.wait().context("Failed to wait for tar")?;
-        let export_status = export_child.wait().context("Failed to wait for docker export")?;
-        
-        if !tar_status.success() || !export_status.success() {
-            return Err(anyhow::anyhow!("Failed to extract filesystem"));
+        let create_output = Command::new("docker")
+            .args(["create", "--name", &container_name, docker_image])
+            .output()
+            .context("Failed to create container")?;
+        if !create_output.status.success() {
+            return Err(anyhow::anyhow!("docker create failed: {}", String::from_utf8_lossy(&create_output.stderr)));
         }
-        println!("Filesystem extracted successfully");
+        println!("Container created: {}", container_name);
+
+        let source_path = format!("{}:/", container_name);
+        let cp_output = Command::new("docker")
+            .args(["cp", source_path.as_str(), env_root.to_str().unwrap()])
+            .output()
+            .context("Failed to copy from container")?;
+        if !cp_output.status.success() {
+            let _ = Command::new("docker").args(["rm", &container_name]).output();
+            return Err(anyhow::anyhow!("docker cp failed: {}", String::from_utf8_lossy(&cp_output.stderr)));
+        }
+        println!("Filesystem copied successfully");
+
+        let rm_output = Command::new("docker")
+            .args(["rm", &container_name])
+            .output()
+            .context("Failed to remove container")?;
+        if !rm_output.status.success() {
+            println!("Warning: Failed to remove temporary container");
+        }
 
         Self::setup_env(&env_root, distro)?;
 
@@ -250,19 +254,29 @@ exec /usr/bin/zypper.real "$@"
         let use_proot = which_binary("proot").is_some();
 
         let status = if use_proot {
+            let env_root_str = env.rootfs_path.as_str();
+            let full_cmd = if cmd_str.contains("sudo") {
+                let path_env = format!("{}/usr/bin:{}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin", env_root_str, env_root_str);
+                format!("export PATH={}; {}", path_env, cmd_str)
+            } else {
+                cmd_str
+            };
+            
             Command::new("proot")
                 .args([
+                    "-0",
                     "-R", env.rootfs_path.as_str(),
                     "-b", "/etc/resolv.conf:/etc/resolv.conf",
                     "-b", "/proc:/proc",
                     "-b", "/sys:/sys",
                     "-b", "/dev:/dev",
-                    "--", "/bin/sh", "-c", &cmd_str
+                    "-w", "/root",
+                    "--", "/bin/sh", "-c", &full_cmd
                 ])
                 .status()
                 .context("Failed to execute command")?
         } else {
-            let path_env = format!("PATH={}/usr/bin:{}/bin:{}", env.rootfs_path, env.rootfs_path, std::env::var("PATH").unwrap_or_default());
+            let path_env = format!("PATH={}/usr/bin:{}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin", env.rootfs_path, env.rootfs_path);
             
             Command::new("/bin/sh")
                 .args(["-c", &cmd_str])
